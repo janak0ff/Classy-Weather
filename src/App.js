@@ -1,6 +1,7 @@
-import React from "react";
+import React from "react"; // Import the React library
 
-function getWeatherIcon(wmoCode) {
+// A function to convert a World Meteorological Organization (WMO) code to a corresponding weather icon
+const getWeatherIcon = (wmoCode) => {
   const icons = new Map([
     [[0], "☀️"],
     [[1], "🌤"],
@@ -13,26 +14,31 @@ function getWeatherIcon(wmoCode) {
     [[95], "🌩"],
     [[96, 99], "⛈"],
   ]);
+
   const arr = [...icons.keys()].find((key) => key.includes(wmoCode));
   if (!arr) return "NOT FOUND";
   return icons.get(arr);
-}
+};
 
-function convertToFlag(countryCode) {
+// A function to convert a country code to a corresponding flag emoji
+const convertToFlag = (countryCode) => {
   const codePoints = countryCode
     .toUpperCase()
     .split("")
     .map((char) => 127397 + char.charCodeAt());
   return String.fromCodePoint(...codePoints);
-}
+};
 
-function formatDay(dateStr) {
+// A function to format a date string to a short weekday name
+const formatDay = (dateStr) => {
   return new Intl.DateTimeFormat("en", {
     weekday: "short",
   }).format(new Date(dateStr));
-}
+};
 
+// The App component
 class App extends React.Component {
+  // The component's state
   state = {
     location: "",
     isLoading: false,
@@ -40,6 +46,7 @@ class App extends React.Component {
     weather: {},
   };
 
+  // A function to fetch the weather data
   fetchWeather = async () => {
     if (this.state.location.length < 2) return this.setState({ weather: {} });
 
@@ -75,16 +82,17 @@ class App extends React.Component {
     }
   };
 
+  // A function to set the location state
   setLocation = (e) => this.setState({ location: e.target.value });
 
-  // useEffect []
+  // useEffect [] (on mount)
   componentDidMount() {
     // this.fetchWeather();
 
     this.setState({ location: localStorage.getItem("location") || "" });
   }
 
-  // useEffect [location]
+  // useEffect [location] (on location change)
   componentDidUpdate(prevProps, prevState) {
     if (this.state.location !== prevState.location) {
       this.fetchWeather();
@@ -93,6 +101,7 @@ class App extends React.Component {
     }
   }
 
+  // Render the component
   render() {
     return (
       <div className="app">
@@ -115,8 +124,7 @@ class App extends React.Component {
   }
 }
 
-export default App;
-
+// The Input component
 class Input extends React.Component {
   render() {
     return (
@@ -132,11 +140,14 @@ class Input extends React.Component {
   }
 }
 
+// The Weather component
 class Weather extends React.Component {
+  // componentWillUnmount is a lifecycle method that is called just before the component is unmounted and destroyed
   componentWillUnmount() {
     console.log("Weather will unmount");
   }
 
+  // Render the component
   render() {
     const {
       temperature_2m_max: max,
@@ -165,7 +176,9 @@ class Weather extends React.Component {
   }
 }
 
+// The Day component
 class Day extends React.Component {
+  // Render the component
   render() {
     const { date, max, min, code, isToday } = this.props;
 
@@ -180,3 +193,5 @@ class Day extends React.Component {
     );
   }
 }
+
+export default App;
